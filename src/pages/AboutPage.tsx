@@ -33,7 +33,7 @@ const AboutPage = () => {
             <div className="md:w-1/2 flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-[#d7c770] blur-lg opacity-30 transform -translate-x-4 translate-y-4"></div>
-                <img src="/Image_%2817%29.jpg" alt="Andrew Wright standing in front of Adam Smith statue" className="rounded-lg shadow-xl relative z-10 max-w-full h-auto border-4 border-white" style={{
+                <img src="image2.jpg" alt="Andrew Wright standing in front of Adam Smith statue" className="rounded-lg shadow-xl relative z-10 max-w-full h-auto border-4 border-white" style={{
                 maxHeight: '500px'
               }} />
               </div>
@@ -112,7 +112,7 @@ const AboutPage = () => {
           <div className="flex flex-col md:flex-row gap-8 mb-12">
             <div className="md:w-1/3">
               <div className="sticky top-6">
-                <img src="/Image_%2816%29.jpg" alt="Me working at desk with multiple monitors" className="rounded-lg shadow-lg mb-6" />
+                <img src="image1.jpg" alt="Me working at desk with multiple monitors" className="rounded-lg shadow-lg mb-6" />
                 <div className="bg-white rounded-lg p-6 shadow-md border border-gray-100">
                   <h3 className="text-xl font-semibold text-[#243975] mb-4">
                     Technical Skills
