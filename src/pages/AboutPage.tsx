@@ -52,7 +52,11 @@ const AboutPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               I founded Rockota in 2025 to combine my passion for economics and
               technology to create tools that make economic concepts accessible
-              and applicable.
+              and applicable, and to explore the future role of technology, programming, and computer science in the field of economics. 
+              This page aims to spread knowledge and ideas on all three of these disciplines, and explores new and innovative ways to mesh these disciplines together.
+              You'll find basic-to-advanced ideas and current knowledge on Economics, Computer Science, and Programming, along with economics projects, games, and data-dashboards using
+              modern web-technologies. The goal is to introduce more computer science and programming into economics, though at the end of the day I'll be happy if I can make just one 
+              person fall in love with the field of economics or programming.
             </p>
             <p className="text-md text-gray-500 mt-3 max-w-2xl mx-auto">
               Rockota is in its early stages of development as I build out the
