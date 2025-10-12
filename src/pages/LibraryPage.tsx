@@ -56,7 +56,7 @@ const LibraryPage = () => {
                     className="rounded-lg shadow-md mb-4"
                   ></iframe>
                   <p className="text-gray-700 leading-relaxed">
-                    A brief video review of Kate Raworth's Doughnut Economics, including her "doughnut"-graph of the economy indicating where we must aim to be in a "safe and just operating space".
+                    A brief video review of Kate Raworth's Doughnut Economics, including her "doughnut" graph of the economy indicating where we must aim to be in a "safe and just operating space".
                   </p>
                 </div>
 
