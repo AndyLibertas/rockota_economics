@@ -1,4 +1,4 @@
-import { PlayIcon, ExternalLinkIcon, CalendarIcon, UserIcon, FileTextIcon, DownloadIcon } from 'lucide-react';
+import { ExternalLinkIcon, CalendarIcon, UserIcon, FileTextIcon, DownloadIcon } from 'lucide-react';
 
 const ResearchPage = () => {
   return (
@@ -37,17 +37,16 @@ const ResearchPage = () => {
                   {/* Video Section */}
                   <div className="lg:w-1/2">
                     <div className="relative bg-gray-100 rounded-lg overflow-hidden">
-                      <video 
-                        controls 
-                        className="w-full h-64 object-cover"
-                        poster="/video-poster.jpg"
-                      >
-                        <source src="/Wright SURE Video.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 hover:bg-opacity-10 transition-all duration-200">
-                        <PlayIcon className="w-16 h-16 text-white opacity-80" />
-                      </div>
+                      <iframe
+                        width="100%"
+                        height="256"
+                        src="https://www.youtube.com/embed/g1YeDiA6_Zg"
+                        title="State-Level Impacts of Exchange Rate Fluctuations"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-64"
+                      ></iframe>
                     </div>
                   </div>
 
