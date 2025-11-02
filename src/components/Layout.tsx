@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { BookOpenIcon, ChartBarIcon, FolderIcon, HomeIcon } from 'lucide-react';
+import { BookOpenIcon, ChartBarIcon, FolderIcon, HomeIcon, FlaskConicalIcon } from 'lucide-react';
 const Layout = () => {
   const location = useLocation();
   const isActive = (path: string) => {
@@ -22,9 +21,13 @@ const Layout = () => {
             </div>
           </div>
           <nav className="flex space-x-6">
-            <Link to="/" className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/') && !isActive('/library') && !isActive('/data') && !isActive('/projects') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+            <Link to="/" className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/') && !isActive('/library') && !isActive('/data') && !isActive('/projects') && !isActive('/research') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
               <HomeIcon size={18} />
               <span>About</span>
+            </Link>
+            <Link to="/research" className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/research') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+              <FlaskConicalIcon size={18} />
+              <span>Research</span>
             </Link>
             <Link to="/library" className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/library') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
               <BookOpenIcon size={18} />
