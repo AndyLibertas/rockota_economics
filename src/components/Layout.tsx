@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { BookOpenIcon, ChartBarIcon, FolderIcon, HomeIcon, FlaskConicalIcon } from 'lucide-react';
+import { BookOpenIcon, ChartBarIcon, FolderIcon, HomeIcon, FlaskConicalIcon, Menu, X } from 'lucide-react';
 const Layout = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isActive = (path: string) => {
     if (path === '/' && location.pathname === '/') return true;
@@ -9,9 +11,9 @@ const Layout = () => {
   };
   return <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm relative z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <img src="/Rockota_Logo.jpg" alt="Rockota Logo" className="h-10 w-auto" />
             <div>
               <h1 className="text-2xl font-bold text-[#008080]">Rockota</h1>
@@ -19,8 +21,10 @@ const Layout = () => {
                 by Andrew Wright • Founded 2025
               </p>
             </div>
-          </div>
-          <nav className="flex space-x-6">
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-6">
             <Link to="/" className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium ${isActive('/') && !isActive('/library') && !isActive('/data') && !isActive('/projects') && !isActive('/research') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
               <HomeIcon size={18} />
               <span>About</span>
@@ -42,7 +46,63 @@ const Layout = () => {
               <span>Projects</span>
             </Link>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Link 
+                to="/" 
+                className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium ${isActive('/') && !isActive('/library') && !isActive('/data') && !isActive('/projects') && !isActive('/research') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <HomeIcon size={20} />
+                <span>About</span>
+              </Link>
+              <Link 
+                to="/research" 
+                className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium ${isActive('/research') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <FlaskConicalIcon size={20} />
+                <span>Research</span>
+              </Link>
+              <Link 
+                to="/library" 
+                className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium ${isActive('/library') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <BookOpenIcon size={20} />
+                <span>Economic Library</span>
+              </Link>
+              <Link 
+                to="/data" 
+                className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium ${isActive('/data') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <ChartBarIcon size={20} />
+                <span>Data</span>
+              </Link>
+              <Link 
+                to="/projects" 
+                className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium ${isActive('/projects') ? 'bg-[#243975] text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <FolderIcon size={20} />
+                <span>Projects</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
       {/* Main Content */}
       <main className="flex-grow">
@@ -51,8 +111,8 @@ const Layout = () => {
       {/* Footer */}
       <footer className="bg-[#243975] text-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="mb-4 md:mb-0 text-center md:text-left">
               <p className="text-sm">
                 © {new Date().getFullYear()} Rockota by Andrew Wright. All
                 rights reserved.
@@ -61,7 +121,7 @@ const Layout = () => {
                 Founded 2025 • Currently in early development
               </p>
             </div>
-            <div className="flex space-x-6">
+            <div className="flex flex-wrap justify-center space-x-4 md:space-x-6 gap-y-2">
               <a href="/" className="text-gray-300 hover:text-white">
                 About
               </a>
