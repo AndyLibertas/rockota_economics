@@ -87,6 +87,74 @@ const LibraryPage = () => {
             </div>
           </div>
 
+          {/* The Shortest History of Economics */}
+          <div className="bg-white rounded-lg shadow-lg border border-[#d7c770]/30 overflow-hidden">
+            <div className="md:flex">
+                <div className="md:w-1/3 bg-gradient-to-br from-[#008080]/10 to-[#243975]/10 p-8 flex flex-col items-center justify-center">
+                <img
+                    src="/Image (20).jpg"
+                    alt="The Shortest History of Economics Book Cover"
+                    className="w-full h-auto object-cover rounded-md shadow-md mb-4"
+                />
+                <div className="text-sm text-gray-600 font-medium">Book Cover</div>
+                </div>
+                <div className="md:w-2/3 p-8 flex flex-col">
+                <div className="flex items-start justify-between mb-4">
+                    <div>
+                    <h2 className="text-3xl font-bold text-[#243975] mb-2">
+                        The Shortest History of Economics
+                    </h2>
+                    <div className="flex items-center text-gray-600 mb-4">
+                        <UserIcon size={16} className="mr-2" />
+                        <span className="text-lg">Andrew Leigh</span>
+                    </div>
+                    </div>
+                    <div className="bg-[#008080]/10 px-3 py-1 rounded-full">
+                    <span className="text-[#008080] font-medium text-sm">Economic History</span>
+                    </div>
+                </div>
+
+                <div className="mb-6">
+                    <iframe
+                    width="100%"
+                    height="315"
+                    src="https://www.youtube.com/embed/2y9JrWJZdnE"
+                    title="The Shortest History of Economics Video Review"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="rounded-lg shadow-md mb-4"
+                    ></iframe>
+                    <p className="text-gray-700 leading-relaxed">
+                    A brief recap of the main events in Andrew Leigh's history of economic development from the early world to the COVID pandemic.
+                    </p>
+                </div>
+
+                <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-[#243975] mb-3">Key Concepts:</h3>
+                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex items-center">
+                        <div className="w-2 h-2 bg-[#008080] rounded-full mr-3"></div>
+                        <span className="text-gray-700">Geographic Formation</span>
+                    </div>
+                    <div className="flex items-center">
+                        <div className="w-2 h-2 bg-[#008080] rounded-full mr-3"></div>
+                        <span className="text-gray-700">Trade Barriers</span>
+                    </div>
+                    <div className="flex items-center">
+                        <div className="w-2 h-2 bg-[#008080] rounded-full mr-3"></div>
+                        <span className="text-gray-700">Monetary Policy</span>
+                    </div>
+                    <div className="flex items-center">
+                        <div className="w-2 h-2 bg-[#008080] rounded-full mr-3"></div>
+                        <span className="text-gray-700">Future of Capitalism</span>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Coming Soon Section */}

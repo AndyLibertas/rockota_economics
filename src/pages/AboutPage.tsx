@@ -125,14 +125,14 @@ const AboutPage = () => {
                   {/* Video Section */}
                   <div className="lg:w-1/2">
                     <div className="relative bg-black rounded-lg overflow-hidden shadow-lg">
-                      <video 
-                        controls 
-                        className="w-full h-64 md:h-72 object-cover"
-                        poster="/video-poster.jpg"
-                      >
-                        <source src="/Wright SURE Video.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
+                    <iframe 
+                      src="https://www.youtube.com/embed/g1YeDiA6_Zg" 
+                      title="YouTube video player" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      allowFullScreen
+                      className="w-full h-64 md:h-72"
+                    ></iframe>
                     </div>
                   </div>
 
