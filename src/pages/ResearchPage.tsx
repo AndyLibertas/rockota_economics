@@ -327,7 +327,7 @@ const ResearchPage = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute top-0 right-0 bg-[#243975] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                  2024
+                  2023
                 </div>
               </div>
 
@@ -392,7 +392,7 @@ const ResearchPage = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute top-0 right-0 bg-[#243975] text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                  2024
+                  2022
                 </div>
               </div>
 
