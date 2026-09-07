@@ -177,6 +177,19 @@ export async function refreshUtil(token: string, id: string): Promise<RefreshJob
   return res.json();
 }
 
+/** Fire a refresh for a single table (fast — only that source is fetched). */
+export async function refreshTable(token: string, id: string, code: string): Promise<RefreshJob> {
+  const res = await fetch(`${API_URL}/api/utils/${id}/refresh?table=${encodeURIComponent(code)}`, {
+    method: 'POST',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(detail?.detail ?? `Refresh failed (${res.status})`);
+  }
+  return res.json();
+}
+
 /** Poll job status once. */
 export async function getRefreshStatus(token: string, id: string): Promise<RefreshJob> {
   return getJson<RefreshJob>(`/api/utils/${id}/refresh`, token);

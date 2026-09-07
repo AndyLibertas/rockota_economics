@@ -85,12 +85,28 @@ export interface ScheduleItem {
   updatedAt: string;
 }
 
+// A book the user has finished — drives the "books read this year" counter.
+export interface ReadingItem {
+  id: string;
+  title: string;
+  finishedAt: string; // YYYY-MM-DD
+}
+
 export interface Board {
   version: number;
   buckets: Bucket[];
   tasks: Task[];
   goals: Goal[];
   schedule: ScheduleItem[];
+  reading: ReadingItem[];
+}
+
+export function newReadingItem(title: string, finishedAt?: string): ReadingItem {
+  return {
+    id: newId('r'),
+    title: title.trim(),
+    finishedAt: finishedAt || new Date().toISOString().slice(0, 10),
+  };
 }
 
 /** Sort key (minutes since midnight) for a freeform time label; untimed sinks. */
@@ -127,6 +143,7 @@ export function defaultBoard(): Board {
     tasks: [],
     goals: [],
     schedule: [],
+    reading: [],
   };
 }
 
@@ -169,6 +186,18 @@ function coerceGoal(raw: unknown): Goal | null {
     notes: typeof r.notes === 'string' ? r.notes : '',
     createdAt: typeof r.createdAt === 'string' ? r.createdAt : now,
     updatedAt: typeof r.updatedAt === 'string' ? r.updatedAt : now,
+  };
+}
+
+function coerceReadingItem(raw: unknown): ReadingItem | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const title = typeof r.title === 'string' ? r.title : '';
+  if (!title.trim()) return null;
+  return {
+    id: typeof r.id === 'string' ? r.id : newId('r'),
+    title,
+    finishedAt: typeof r.finishedAt === 'string' && r.finishedAt ? r.finishedAt : new Date().toISOString().slice(0, 10),
   };
 }
 
@@ -248,7 +277,11 @@ export function parseBoard(md: string): Board | null {
   const schedule: ScheduleItem[] = rawSchedule
     .map((s) => coerceScheduleItem(s))
     .filter((s): s is ScheduleItem => s !== null);
-  return { version: 2, buckets, tasks, goals, schedule };
+  const rawReading = Array.isArray(d.reading) ? d.reading : [];
+  const reading: ReadingItem[] = rawReading
+    .map((r) => coerceReadingItem(r))
+    .filter((r): r is ReadingItem => r !== null);
+  return { version: 2, buckets, tasks, goals, schedule, reading };
 }
 
 /** Render a Board back to board.md markdown (json block is canonical). */

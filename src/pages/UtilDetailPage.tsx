@@ -14,6 +14,7 @@ import ViewHost from '../components/ViewHost';
 import {
   getUtil,
   refreshUtil,
+  refreshTable,
   getRefreshStatus,
   listTables,
   getTable,
@@ -326,7 +327,9 @@ const UtilDetailInner = ({ id }: { id: string }) => {
 
   // Single consolidated data tab (grouped spreadsheets) or a view id
   const [activeTab, setActiveTab] = useState<string>('tables');
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const [activeTableCode, setActiveTableCode] = useState<string | null>(null);
+  const [refreshingTable, setRefreshingTable] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -351,6 +354,21 @@ const UtilDetailInner = ({ id }: { id: string }) => {
     if (rest.length) out.push({ name: defs.length ? 'Other Spreadsheets' : 'Spreadsheets', tables: rest });
     return out;
   }, [manifest, tables]);
+
+  // The currently selected group section (sub-tab under the Data tab).
+  const currentGroup = useMemo(
+    () => tableGroups.find((g) => g.name === activeGroup) ?? tableGroups[0] ?? null,
+    [tableGroups, activeGroup],
+  );
+
+  // Default the active group + selected table once tables load / group changes.
+  useEffect(() => {
+    if (!tableGroups.length) return;
+    const g = tableGroups.find((x) => x.name === activeGroup) ?? tableGroups[0];
+    if (activeGroup !== g.name) setActiveGroup(g.name);
+    const inGroup = g.tables.some((t) => t.code === activeTableCode);
+    if (!inGroup) setActiveTableCode(g.tables[0]?.code ?? null);
+  }, [tableGroups, activeGroup, activeTableCode]);
 
   const activeTable = useMemo(
     () => tables.find((t) => t.code === activeTableCode) ?? null,
@@ -404,6 +422,32 @@ const UtilDetailInner = ({ id }: { id: string }) => {
     }
   }
 
+  async function handleRefreshTable(code: string) {
+    if (!token) return;
+    setRefreshingTable(code);
+    setError(null);
+    setNotice(null);
+    try {
+      await refreshTable(token, id, code);
+      const deadline = Date.now() + 5 * 60 * 1000;
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const job = await getRefreshStatus(token, id);
+        if (job.status === 'done') {
+          setNotice('Table refreshed.');
+          await loadMeta();
+          return;
+        }
+        if (job.status === 'error') throw new Error(job.error ?? 'Refresh failed');
+      }
+      throw new Error('Refresh timed out.');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Refresh failed');
+    } finally {
+      setRefreshingTable(null);
+    }
+  }
+
   if (loading) {
     return (
       <div className="w-full min-h-[60vh] flex items-center justify-center text-gray-500">Loading…</div>
@@ -438,7 +482,7 @@ const UtilDetailInner = ({ id }: { id: string }) => {
               <button onClick={handleRefresh} disabled={refreshing}
                 className="inline-flex items-center space-x-2 rounded-md bg-[#243975] px-4 py-2 text-sm font-medium text-white hover:bg-[#1c2e5e] disabled:opacity-60">
                 <RefreshCwIcon size={16} className={refreshing ? 'animate-spin' : ''} />
-                <span>{refreshing ? 'Refreshing…' : 'Refresh data'}</span>
+                <span>{refreshing ? 'Refreshing…' : 'Refresh all'}</span>
               </button>
             </div>
           )}
@@ -464,32 +508,56 @@ const UtilDetailInner = ({ id }: { id: string }) => {
               <p className="text-sm text-gray-400">Click <span className="font-medium">Refresh data</span> to pull the latest.</p>
             </div>
           ) : (
-            <div className="flex flex-col md:flex-row gap-4">
-              <aside className="md:w-72 shrink-0">
-                <div className="border border-gray-200 rounded-lg bg-white overflow-hidden max-h-[75vh] overflow-y-auto">
+            <div>
+              {/* Group sub-tabs (State & Regional / County / …) */}
+              {tableGroups.length > 1 && (
+                <div className="flex flex-wrap items-center gap-1.5 mb-4">
                   {tableGroups.map((g) => (
-                    <div key={g.name}>
-                      <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500 bg-gray-50 border-y border-gray-100">{g.name}</div>
-                      {g.tables.map((t) => {
-                        const active = activeTableCode === t.code;
-                        return (
-                          <button key={t.code} onClick={() => setActiveTableCode(t.code)}
-                            className={`w-full text-left px-3 py-2.5 border-l-[3px] transition-colors ${active ? 'border-l-[#008080] bg-[#008080]/8' : 'border-l-transparent hover:bg-gray-50'}`}>
-                            <div className={`text-sm leading-snug ${active ? 'text-[#008080] font-medium' : 'text-gray-700'}`}>{t.title ?? t.code}</div>
-                            <div className="text-[11px] text-gray-400 mt-0.5">{t.n_rows} rows · {t.n_columns} cols</div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <button key={g.name}
+                      onClick={() => { setActiveGroup(g.name); setActiveTableCode(g.tables[0]?.code ?? null); }}
+                      className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        (currentGroup?.name === g.name)
+                          ? 'bg-[#008080] text-white'
+                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                      }`}>
+                      {g.name} <span className="opacity-60">({g.tables.length})</span>
+                    </button>
                   ))}
                 </div>
-              </aside>
-              <div className="flex-1 min-w-0">
-                {activeTable ? (
-                  <DataTableView key={activeTable.code} token={token ?? ''} utilId={id} meta={activeTable} />
-                ) : (
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-10 text-center text-gray-400 text-sm">Select a spreadsheet to view.</div>
-                )}
+              )}
+
+              <div className="flex flex-col md:flex-row gap-4">
+                <aside className="md:w-72 shrink-0">
+                  <div className="border border-gray-200 rounded-lg bg-white overflow-hidden max-h-[75vh] overflow-y-auto">
+                    {(currentGroup?.tables ?? []).map((t) => {
+                      const active = activeTableCode === t.code;
+                      return (
+                        <button key={t.code} onClick={() => setActiveTableCode(t.code)}
+                          className={`w-full text-left px-3 py-2.5 border-l-[3px] transition-colors ${active ? 'border-l-[#008080] bg-[#008080]/8' : 'border-l-transparent hover:bg-gray-50'}`}>
+                          <div className={`text-sm leading-snug ${active ? 'text-[#008080] font-medium' : 'text-gray-700'}`}>{t.title ?? t.code}</div>
+                          <div className="text-[11px] text-gray-400 mt-0.5">{t.n_rows} rows · {t.n_columns} cols</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </aside>
+                <div className="flex-1 min-w-0">
+                  {activeTable ? (
+                    <>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <h3 className="text-base font-semibold text-[#243975] truncate">{activeTable.title ?? activeTable.code}</h3>
+                        <button onClick={() => handleRefreshTable(activeTable.code)} disabled={refreshingTable === activeTable.code}
+                          className="shrink-0 inline-flex items-center gap-1.5 rounded-md border border-[#008080] px-3 py-1.5 text-xs font-medium text-[#008080] hover:bg-[#008080]/10 disabled:opacity-50">
+                          <RefreshCwIcon size={14} className={refreshingTable === activeTable.code ? 'animate-spin' : ''} />
+                          {refreshingTable === activeTable.code ? 'Refreshing…' : 'Refresh this table'}
+                        </button>
+                      </div>
+                      <DataTableView key={activeTable.code} token={token ?? ''} utilId={id} meta={activeTable} />
+                    </>
+                  ) : (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-10 text-center text-gray-400 text-sm">Select a spreadsheet to view.</div>
+                  )}
+                </div>
               </div>
             </div>
           )

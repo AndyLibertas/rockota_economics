@@ -1084,7 +1084,10 @@ export default function RockwellDock() {
       </div>
     );
 
+    const yr = new Date().getFullYear();
+    const booksThisYear = (board.reading ?? []).filter((r) => (r.finishedAt || '').slice(0, 4) === String(yr));
     const stats: [string, number][] = [
+      [`Books read '${String(yr).slice(2)}`, booksThisYear.length],
       ['Due today', dueToday.length],
       ['Open', openAll.length],
       ['Done this week', completedWeek.length],
@@ -1106,7 +1109,7 @@ export default function RockwellDock() {
           </button>
         </div>
 
-        <div className="px-4 pt-3 grid grid-cols-3 gap-2">
+        <div className="px-4 pt-3 grid grid-cols-4 gap-2">
           {stats.map(([label, val]) => (
             <div key={label} className="rounded-lg px-3 py-2" style={{ background: PANEL, border: `1px solid ${GOLD}22` }}>
               <div className="text-[20px] font-semibold leading-tight" style={{ color: GOLD }}>{val}</div>
@@ -1114,6 +1117,20 @@ export default function RockwellDock() {
             </div>
           ))}
         </div>
+
+        {booksThisYear.length > 0 && (
+          <div className="px-4 pt-2">
+            <div className="rounded-lg px-3 py-2" style={{ background: PANEL, border: `1px solid ${GOLD}22` }}>
+              <div className="text-[10px] uppercase tracking-wide mb-1.5" style={{ color: GOLD }}>📚 Read this year</div>
+              <div className="flex flex-wrap gap-1.5">
+                {booksThisYear.map((r) => (
+                  <span key={r.id} className="text-[11px] rounded-full px-2 py-0.5"
+                    style={{ background: `${GOLD}12`, color: '#0f2e2e', border: `1px solid ${GOLD}2e` }}>{r.title}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-auto px-4 py-3">
           <div className="flex gap-3 items-start">
